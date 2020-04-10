@@ -2,25 +2,22 @@
 
 Create aliases for all your important development commands
 
-## What it does
+## Core concepts
 
-`tasks.sh` will create three files on the first run: `init.sh`, `aliases.sh`,
-and `taskfileperdir.sh`, all in the path `$HOME/.config/tasks/`.
+This script handles three core concepts:
 
-- `init.sh` sources both `aliases.sh` and `taskfileperdir.sh`.
-- `aliases.sh` contains the aliases for every task in every of your projects.
-- `taskfileperdir.sh` maps a directory with a `taskfile`.
+- `abbr`, abbreviation for _abbreviation_,
+- `task`, which is a human-readable instruction, and
+- `command`, the command executed when you run a `task`.
 
----
+Then, when you run an `abbr` inside a directory indexed by `tasks.sh`, it'll
+find its corresponding `task`, and execute the custom per-project `command` for
+that task.
 
-When `tasks.sh` is run, it'll prompt you the `tasksfile` name, each `task` and
-each `taskcommand`.
+### Example
 
-Assuming you run the script in `~/my-project`, set a `tasksfile = my-tasks.sh`,
-and have 2 tasks `serve` and `build`, with their respective commands
-`python -m http.server` and `make build`, you'd have these files:
-
-- `~/my-project/my-tasks.sh`
+- `~/my-project/taskfile.sh` This lives in your project and maps a `task` to its
+  `command`.
 
   ```sh
   #!/bin/bash
@@ -30,21 +27,21 @@ and have 2 tasks `serve` and `build`, with their respective commands
   esac
   ```
 
-- `$HOME/.config/tasks/taskfileperdir.sh`
+- `~/.config/tasks/abbrs`: This maps an`abbr` (that will be aliased in your
+  shell) to a task in **any** `taskfile`. **The implementation of the tasks
+  depends on your project.**
 
-  Set the `taskfile` path to an absolute path so it can be accessed within
-  subdirectories.
-
-  ```sh
-  #!/bin/bash
-  declare -A TASKFILES
-  TASKFILES["${HOME}/my-project/"]="${HOME}/my-project/my-tasks.sh"
+  ```
+  s serve
+  b build
   ```
 
-- `$HOME/.config/tasks/aliases.sh`
+- `~/.config/tasks/taskfiles`: This maps each indexed directory to its
+  `taskfile`.
 
-  ```sh
-  #!/bin/bash
-  alias s=". ${TASKFILE} serve"
-  alias b=". ${TASKFILE} build"
   ```
+  ~/my-project ~/my-project/taskfile.sh
+  ```
+
+Now, if you execute either `s` or `b` inside `~/my-project`, you'll execute
+`python -m http.server` and `make build` respectively.
