@@ -13,7 +13,11 @@ function tasks-do-task()
 	if [[ "$read_task" == "$task" ]];
 	then
 	    eval "$read_command";
+	    return 0;
 	fi
 	if (($read_status)); then break; fi
     done < "$taskfile";
+    
+    echo "There is no task named $task in the taskfile $taskfile";
+    return 255;
 }
