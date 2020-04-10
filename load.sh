@@ -21,15 +21,15 @@ function add-taskfile()
 while true;
 do
     read abbr task;
-    status=$?;
+    read_status=$?;
     add-abbr "$abbr" "$task" > /dev/null;
-    if (($status)); then break; fi
+    if (($read_status)); then break; fi
 done < "$config_dir/abbrs";
 
 while true;
 do
     read dir taskfile;
-    status=$?;
+    read_status=$?;
     add-taskfile "$dir" "$taskfile" > /dev/null;
-    if (($status)); then break; fi
+    if (($read_status)); then break; fi
 done < "$config_dir/taskfiles";
